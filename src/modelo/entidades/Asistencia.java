@@ -1,17 +1,20 @@
-package entidades;
+package modelo.entidades;
+
+import java.util.Date;
 
 public class Asistencia {
-    private String fecha;
+    private Date fecha;
     private boolean isPresente;
 
     public Asistencia() {
     }
 
-    public String getFecha() {
+
+    public Date getFecha() {
         return fecha;
     }
 
-    public void setFecha(String fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 

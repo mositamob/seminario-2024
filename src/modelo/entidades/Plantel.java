@@ -1,15 +1,24 @@
-package entidades;
+package modelo.entidades;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Plantel {
     private Entrenador directorTecnico;
     private Entrenador preparadorFisico;
-    private List<Jugador> jugadores;
-    private Categoria categoria;
+    private List<Jugador> jugadores = new ArrayList<>();
+    private Division division;
     private Equipo equipoConvocado;
 
     public Plantel() {
+    }
+
+    public Division getDivision() {
+        return division;
+    }
+
+    public void setDivision(Division division) {
+        this.division = division;
     }
 
     public Entrenador getDirectorTecnico() {
@@ -34,14 +43,6 @@ public class Plantel {
 
     public void setJugadores(List<Jugador> jugadores) {
         this.jugadores = jugadores;
-    }
-
-    public Categoria getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
     }
 
     public Equipo getEquipoConvocado() {

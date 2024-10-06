@@ -1,8 +1,8 @@
-package entidades;
+package modelo.entidades;
 
 import java.util.Date;
 
-public class Persona {
+public abstract class Persona {
     private String dni;
     private String nombre;
     private String apellido;
@@ -49,4 +49,6 @@ public class Persona {
     public void setFechaNacimiento(Date fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
+
+    public abstract String mostrarDatosPersonales();
 }

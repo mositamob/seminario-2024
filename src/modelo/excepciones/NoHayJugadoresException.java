@@ -1,0 +1,7 @@
+package modelo.excepciones;
+
+public class NoHayJugadoresException extends Exception{
+    public NoHayJugadoresException(String errorMessage) {
+        super(errorMessage);
+    }
+}

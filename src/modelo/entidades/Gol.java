@@ -1,4 +1,4 @@
-package entidades;
+package modelo.entidades;
 
 public class Gol {
     private Jugador jugador;

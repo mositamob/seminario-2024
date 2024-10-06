@@ -1,4 +1,4 @@
-package entidades;
+package modelo.entidades;
 
 public class Posicion {
     private String nombre;
