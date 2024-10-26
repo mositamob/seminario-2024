@@ -17,6 +17,10 @@ public class Menu {
     public Menu() {
     }
 
+    /**
+     * Menu de opciones.
+     * @throws ParseException
+     */
     public void mostrarOpciones() throws ParseException {
         System.out.println("Seleccione opción:");
         Scanner opcionesScan = new Scanner(System.in);

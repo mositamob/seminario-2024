@@ -46,7 +46,15 @@ public class JugadorControlador {
         }
     };
 
-
+    /**
+     * Crea los objetos para leer los  datos ingresados por consola.
+     *
+     * @return nuevo jugador.
+     * @throws ParseException
+     * @throws InvalidPosicionException
+     * @throws InvalidAñoCategoriaException
+     * @throws InvalidFormatoFechaException
+     */
     public Jugador altaJugador() throws ParseException, InvalidPosicionException, InvalidAñoCategoriaException, InvalidFormatoFechaException {
         Scanner nombreScan = new Scanner(System.in);
         Scanner apellidoScan = new Scanner(System.in);
@@ -58,7 +66,22 @@ public class JugadorControlador {
         return altaJugador(nombreScan, apellidoScan, aptoFisicoValue, dniScan, fechaNacimientoScan, categoriaScan, posicionScan);
     }
 
-
+    /**
+     * Solicita ingreso de datos y crea un nuevo jugador.
+     *
+     * @param nombreScan
+     * @param apellidoScan
+     * @param aptoFisicoValue
+     * @param dniScan
+     * @param fechaNacimientoScan
+     * @param categoriaScan
+     * @param posicionScan
+     * @return un nuevo jugador.
+     * @throws ParseException
+     * @throws InvalidAñoCategoriaException
+     * @throws InvalidPosicionException
+     * @throws InvalidFormatoFechaException
+     */
     public Jugador altaJugador(Scanner nombreScan, Scanner apellidoScan, Scanner aptoFisicoValue, Scanner dniScan, Scanner fechaNacimientoScan, Scanner categoriaScan, Scanner posicionScan) throws ParseException, InvalidAñoCategoriaException, InvalidPosicionException, InvalidFormatoFechaException {
         Jugador jugador;
         System.out.println("Alta nuevo jugador");
@@ -113,6 +136,11 @@ public class JugadorControlador {
         return jugador;
     }
 
+    /**
+     * valida que la fecha tenga el formato dd-mm-yyyy.
+     * @param fecha dato string ingresado por consola.
+     * @throws InvalidFormatoFechaException
+     */
     private void validateFormatoFecha(String fecha) throws InvalidFormatoFechaException {
         Pattern pattern = Pattern.compile(REGEX);
         Matcher matcher = pattern.matcher(fecha);
@@ -122,6 +150,12 @@ public class JugadorControlador {
 
     }
 
+    /**
+     * validación de la categoria corresponda con la fecha de nacimiento.
+     * @param añoNacimiento
+     * @param categoria
+     * @throws InvalidAñoCategoriaException
+     */
     private void validateCategoriaFecha(String añoNacimiento, String categoria) throws InvalidAñoCategoriaException {
         //TODO validar con la fecha de nacimiento categoria+1 si mes nacimiento es entre julio y diciembre
         if (!añoNacimiento.equalsIgnoreCase(categoria)) {
@@ -129,6 +163,10 @@ public class JugadorControlador {
         }
     }
 
+    /**
+     * lista los jugadores de una división ingresada por consola.
+     * @param club
+     */
     public void listarJugadores(Club club) {
         Scanner divisionScan = new Scanner(System.in);
         System.out.println("3. Listar judagores Equipo");

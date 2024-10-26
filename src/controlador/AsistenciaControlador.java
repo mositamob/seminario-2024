@@ -5,6 +5,11 @@ import modelo.entidades.*;
 import java.util.*;
 
 public class AsistenciaControlador {
+    /**
+     * Registra la asistencia de todos los jugadores de una división
+     * que correspondan a la semana actual de entrenamiento.
+     * @param club
+     */
     public void registrarAsistencia(Club club) {
         Scanner divisionScan = new Scanner(System.in);
         System.out.println("Ingrese División:");

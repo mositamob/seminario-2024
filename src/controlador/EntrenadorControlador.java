@@ -9,6 +9,12 @@ import java.util.Scanner;
 
 public class EntrenadorControlador {
 
+    /**
+     * Crea un nuevo entrenador, director técnico o preparador físico
+     * a partir de datos ingresados por consola
+     *
+     * @return un nuevo entrenador.
+     */
     public Entrenador altaEntrenador() {
 
         Entrenador entrenador = null;

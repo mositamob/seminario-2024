@@ -15,6 +15,11 @@ public class PlantelControlador {
     public PlantelControlador() {
     }
 
+    /**
+     * Asigna un nuevo jugador a una divisón de los planteles del club.
+     * @param jugador
+     * @param club
+     */
     public void asignarJugadorAPlantel(Jugador jugador, Club club) {
         System.out.println("Confirma Alta Jugador? Si - No ");
         Scanner siNoScan = new Scanner(System.in);
@@ -30,6 +35,11 @@ public class PlantelControlador {
         }
     }
 
+    /**
+     * asigna un nuevo entrenador al plantel, director técnico o preparador físico.
+     * @param entrenador
+     * @param club
+     */
     public void asignarEntrenadorAPlantel(Entrenador entrenador, Club club) {
         System.out.println("Confirma Alta Entrenador? Si - No ");
         Scanner siNoScan = new Scanner(System.in);
@@ -67,6 +77,11 @@ public class PlantelControlador {
         }
     }
 
+    /**
+     * genera la lista de un equipo ordenado en base a la asistencia a entrenamiento.
+     * @param club
+     * @return lista de jugadores ordenada.
+     */
     public List<Jugador> generarEquipoPriorizado(Club club) {
         List<Jugador> jugadores;
         Scanner divisionScan = new Scanner(System.in);
@@ -91,6 +106,11 @@ public class PlantelControlador {
         return jugadores;
     }
 
+    /**
+     * Calcula la asistencia y agrega el jugador a una nueva lista de jugadores priorizada
+     * @param plantel
+     * @return lista de jugadores priorizada.
+     */
     private static List<Jugador> getJugadoresPriorizados(Plantel plantel) {
         List<Jugador> jugadores = plantel.getJugadores();
         List<Jugador> priorizados = new ArrayList<>();
@@ -104,6 +124,11 @@ public class PlantelControlador {
         return priorizados;
     }
 
+    /**
+     * Genera un equipo ordenado a partir de la cantidad que solicite el usuario por consola.
+     * @param club
+     * @return lista del tamaño seleccionado.
+     */
     public List<Jugador> generarEquipoPriorizadoCantidad(Club club) {
         Scanner divisionScan = new Scanner(System.in);
         System.out.println("Ingrese División:");
@@ -124,6 +149,11 @@ public class PlantelControlador {
         return listaCantidad;
     }
 
+    /**
+     * imprime por pantalla los datos de los jugadores convocados.
+     * @param club
+     * @return String con datos de los jugadores.
+     */
     public String mostrarEquipoConvocado(Club club) {
         Scanner divisionScan = new Scanner(System.in);
         System.out.println("Ingrese División:");
@@ -137,6 +167,11 @@ public class PlantelControlador {
         return division;
     }
 
+    /**
+     * permite la edicion de la lista de jugadores convocados.
+     * @param club
+     * @throws JugadorDuplicadoException
+     */
     public void editarEquipoConvocado(Club club) throws JugadorDuplicadoException {
         String division = mostrarEquipoConvocado(club);
         Scanner dniScan = new Scanner(System.in);
@@ -177,6 +212,10 @@ public class PlantelControlador {
         System.out.println("El jugador: " + nuevo.getNombre() + " " + nuevo.getApellido() + "- DNI: " + nuevo.getDni());
     }
 
+    /**
+     * Elimina un jugador del plantel y de la lista de convocados.
+     * @param club
+     */
     public void desafectarJugador(Club club) {
         Scanner divisionScan = new Scanner(System.in);
         System.out.println("Ingrese División:");
