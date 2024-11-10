@@ -10,6 +10,5 @@ public class Main {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-
     }
 }
