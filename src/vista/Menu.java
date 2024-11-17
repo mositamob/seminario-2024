@@ -7,10 +7,10 @@ import controlador.PlantelControlador;
 import modelo.entidades.Club;
 import modelo.entidades.Entrenador;
 import modelo.entidades.Jugador;
-import modelo.excepciones.InvalidAñoCategoriaException;
-import modelo.excepciones.InvalidFormatoFechaException;
-import modelo.excepciones.InvalidPosicionException;
-import modelo.excepciones.JugadorDuplicadoException;
+import excepciones.InvalidAñoCategoriaException;
+import excepciones.InvalidFormatoFechaException;
+import excepciones.InvalidPosicionException;
+import excepciones.JugadorDuplicadoException;
 
 import java.text.ParseException;
 import java.util.Scanner;
@@ -48,7 +48,6 @@ public class Menu {
             System.out.println("3. Listar Jugadores");
             System.out.println("4. Registrar Asistencia");
             System.out.println("5. Generar Equipo Priorizado");
-            System.out.println("6. Equipo Priorizado por Cantidad");
             System.out.println("7. Mostrar Equipo Convocado");
             System.out.println("8. Editar Equipo Convocado");
             System.out.println("9. Desafectar Jugador");

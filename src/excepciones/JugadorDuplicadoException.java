@@ -1,4 +1,4 @@
-package modelo.excepciones;
+package excepciones;
 
 public class JugadorDuplicadoException extends Exception{
     public JugadorDuplicadoException(String errorMessage) {

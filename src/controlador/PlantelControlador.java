@@ -1,9 +1,9 @@
 package controlador;
 
-import dao.ConnectionDao;
-import dao.ConnectionDaoImpl;
+import modelo.dao.ConnectionDao;
+import modelo.dao.ConnectionDaoImpl;
 import modelo.entidades.*;
-import modelo.excepciones.JugadorDuplicadoException;
+import excepciones.JugadorDuplicadoException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -148,7 +148,7 @@ public class PlantelControlador {
         partido.setFechaPartido(parsed);
         equipo.setPartido(partido);
         plantel.setEquipoConvocado(equipo);
-        System.out.println("Lista Priorizada, solo jugadores con asistencia: ");
+        System.out.println("Lista Priorizada, solo jugadores con asistencia: \n");
         for (Jugador jugador : jugadores) {
             System.out.println(jugador.getNombre() + " " + jugador.getApellido() + " - " + jugador.getPosicion().name() + " - " + "Asistió: " + jugador.getTotalPresente() + " días");
         }
@@ -337,11 +337,12 @@ public class PlantelControlador {
         }
         System.out.println("Ingrese DNI de jugador a desafectar:");
         String dni = dniScan.next();
+        int idPlantel = plantel.getId();
         con.deleteJugador(conexion, dni);
-        con.deleteJugadorIdPlantel(conexion, plantel.getId(), dni);
+        con.deleteJugadorIdPlantel(conexion, idPlantel, dni);
         for (Jugador j : jugadores) {
             if (j.getDni().equalsIgnoreCase(dni)) {
-                System.out.println("Se desafecta al jugado DNI:" + j.getDni() + "- " + j.getNombre() + " " + j.getApellido());
+                System.out.println("Se desafecta al jugador DNI:" + j.getDni() + "- " + j.getNombre() + " " + j.getApellido());
                 jugadores.remove(j);
                 break;
             }

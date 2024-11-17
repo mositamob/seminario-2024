@@ -1,12 +1,12 @@
 package controlador;
 
-import dao.ConnectionDao;
-import dao.ConnectionDaoImpl;
+import modelo.dao.ConnectionDao;
+import modelo.dao.ConnectionDaoImpl;
 import modelo.entidades.*;
-import modelo.excepciones.InvalidAñoCategoriaException;
-import modelo.excepciones.InvalidFormatoFechaException;
-import modelo.excepciones.InvalidPosicionException;
-import modelo.excepciones.NoHayJugadoresException;
+import excepciones.InvalidAñoCategoriaException;
+import excepciones.InvalidFormatoFechaException;
+import excepciones.InvalidPosicionException;
+import excepciones.NoHayJugadoresException;
 
 import java.sql.Connection;
 import java.sql.SQLException;

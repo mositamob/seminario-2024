@@ -1,4 +1,4 @@
-package modelo.excepciones;
+package excepciones;
 
 public class InvalidAñoCategoriaException extends Exception{
     public InvalidAñoCategoriaException(String errorMessage) {

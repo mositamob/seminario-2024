@@ -1,7 +1,7 @@
 package modelo.entidades;
 
 
-import modelo.excepciones.NoHayJugadoresException;
+import excepciones.NoHayJugadoresException;
 
 import java.util.ArrayList;
 import java.util.HashMap;

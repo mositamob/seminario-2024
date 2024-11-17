@@ -1,4 +1,4 @@
-package dao;
+package modelo.dao;
 
 import modelo.entidades.*;
 
@@ -15,8 +15,8 @@ public class ConnectionDaoImpl implements ConnectionDao {
         String user = "root";
         String pass = "rootroot";
         String host = "jdbc:mysql://localhost:3306/club-futbol";
-        String bd = "club";
         System.out.println("Conectando a la Base de Datos");
+        System.out.println("------------------------------");
         try {
             conexion = DriverManager.getConnection(host, user, pass);
             System.out.println("Conexión exitosa");
@@ -154,7 +154,7 @@ public class ConnectionDaoImpl implements ConnectionDao {
             preparedStmt.setDate(6, new java.sql.Date(jugador.getFechaNacimiento().getTime()));
             preparedStmt.setString(7, jugador.getCategoria().getNombre());
             preparedStmt.execute();
-            System.out.println("se suma un jugador: " + jugador.getNombre() + "," + jugador.getApellido() + "," + jugador.getDni());
+            System.out.println("se suma un jugador: " + jugador.getNombre() + " " + jugador.getApellido() + "DNI: " + jugador.getDni());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -322,7 +322,7 @@ public class ConnectionDaoImpl implements ConnectionDao {
 
     @Override
     public void updateJugadorIdPlantel(Connection connection, int idPlantel, String dni) {
-        String sql = "UPDATE `club-futbol`.`jugadores` SET `id_plantel` = ? WHERE `dni` = ?";
+        String sql = "DELETE FROM `club-futbol`.`jugadores_x_plantel` WHERE (`dni` = ?) and (`id_plantel` = ?);";
 
         PreparedStatement preparedStmt;
         try {
@@ -351,17 +351,18 @@ public class ConnectionDaoImpl implements ConnectionDao {
 
     @Override
     public void deleteJugadorIdPlantel(Connection connection, int idPlantel, String dni) {
-        String sql = "DELETE FROM `club-futbol`.`jugadores_x_plantel` WHERE `dni` = ? and `id_plantel` = ?";
+        String sql = "DELETE FROM `club-futbol`.`jugadores_x_plantel` WHERE (`dni` = ?) and (`id_plantel` = ?)";
+
         PreparedStatement preparedStmt;
         try {
             preparedStmt = connection.prepareStatement(sql);
             preparedStmt.setString(1, dni);
-            preparedStmt.setInt(1, idPlantel);
+            preparedStmt.setInt(2, idPlantel);
             // Ejecutar la eliminación
             int filasAfectadas = preparedStmt.executeUpdate();
             // Verificar si se eliminó algún registro
             if (filasAfectadas > 0) {
-                System.out.println("Jugador eliminado correctamente.");
+                System.out.println("Jugador desafectado del plantel.");
             } else {
                 System.out.println("No se encontró un jugador con ese dni.");
             }

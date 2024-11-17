@@ -1,7 +1,7 @@
 package controlador;
 
-import dao.ConnectionDao;
-import dao.ConnectionDaoImpl;
+import modelo.dao.ConnectionDao;
+import modelo.dao.ConnectionDaoImpl;
 import modelo.entidades.*;
 
 import java.sql.Connection;
