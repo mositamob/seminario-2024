@@ -9,6 +9,10 @@ public class Asistencia {
     public Asistencia() {
     }
 
+    public Asistencia(boolean isPresente, Date fecha) {
+        this.isPresente = isPresente;
+        this.fecha = fecha;
+    }
 
     public Date getFecha() {
         return fecha;

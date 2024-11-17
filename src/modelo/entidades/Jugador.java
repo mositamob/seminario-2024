@@ -63,14 +63,14 @@ public class Jugador extends Persona implements Comparable<Jugador> {
         return totalPresente;
     }
 
-    public void setTotalPresente(int totalPresente) {
-        this.totalPresente = totalPresente;
+    public void setTotalPresente() {
+        this.totalPresente ++;
     }
 
     public void calcularClasesPresente(String semanaActual) {
         int total = 0;
         for (var entry : asistencia.entrySet()) {
-            String semana = entry.getKey().split("-")[0];
+            String semana = entry.getKey().split("_")[0];
             if (semana.equalsIgnoreCase(semanaActual) && entry.getValue().isPresente()) {
                 total++;
             }
@@ -81,7 +81,7 @@ public class Jugador extends Persona implements Comparable<Jugador> {
     @Override
     public String mostrarDatosPersonales() {
         return "\nCategoria: " + this.getCategoria().getNombre() + "- Division: " + this.getCategoria().getDivision().getNombre()
-                + "- Posición: " + this.getPosicion().getNombre() + "\n DNI : " + this.getDni()
+                + "- Posición: " + this.getPosicion().name()+ "\n DNI : " + this.getDni()
                 + "- Nombre: " + this.getNombre() + " " + this.getApellido() + " - Apto Fisico: "
                 + (this.isAptoFisico() ? "si" : "no");
     }

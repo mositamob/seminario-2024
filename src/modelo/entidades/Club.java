@@ -5,6 +5,7 @@ import modelo.excepciones.NoHayJugadoresException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Club {
@@ -43,8 +44,8 @@ public class Club {
     }
 
 
-    public void validateExistenJugadores(Plantel plantel) throws NoHayJugadoresException {
-        if (plantel.getJugadores().size() == 0) {
+    public void validateExistenJugadores(List<Jugador> jugadores) throws NoHayJugadoresException {
+        if (jugadores.size() == 0) {
             throw new NoHayJugadoresException("No existen jugadores cargados en la division seleccionada");
         }
     }
@@ -66,6 +67,6 @@ public class Club {
     }
 
     public Map<String, Plantel> getPlanteles() {
-        return planteles;
+        return this.planteles;
     }
 }

@@ -1,21 +1,28 @@
 package controlador;
 
+import dao.ConnectionDao;
+import dao.ConnectionDaoImpl;
 import modelo.entidades.*;
-import modelo.excepciones.*;
+import modelo.excepciones.InvalidAñoCategoriaException;
+import modelo.excepciones.InvalidFormatoFechaException;
+import modelo.excepciones.InvalidPosicionException;
+import modelo.excepciones.NoHayJugadoresException;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class JugadorControlador {
+public class JugadorControlador extends PlantelControlador {
     /**
      * (3[01]|[12][0-9]|0[1-9]): Este grupo valida el día.
      * 3[01]: Acepta los días 30 o 31 (días válidos para ciertos meses).
      * [12][0-9]: Acepta los días 10 al 29.
      * 0[1-9]: Acepta los días 01 al 09.
-     *
+     * <p>
      * (1[0-2]|0[1-9]): Este grupo valida el mes.
      * 1[0-2]: Acepta los meses 10, 11 o 12.
      * 0[1-9]: Acepta los meses 01 al 09.
@@ -23,26 +30,14 @@ public class JugadorControlador {
      */
     private static String REGEX = "^(3[01]|[12][0-9]|0[1-9])-(1[0-2]|0[1-9])-[0-9]{4}$";
 
-    private Map<String, Division> categoriasDivision = new HashMap<>() {
-        {
-            put("2007", new Division("cuarta"));
-            put("2008", new Division("quinta"));
-            put("2009", new Division("sexta"));
-            put("2010", new Division("septima"));
-            put("2011", new Division("octava"));
-            put("2012", new Division("novena"));
-            put("2013", new Division("decima"));
-            put("2014", new Division("onceava"));
-            put("2015", new Division("doceava"));
-        }
 
-    };
     private Map<String, String> posiciones = new HashMap<>() {
         {
-            put("1", "arquero");
-            put("2", "defensor");
-            put("3", "mediocampo");
-            put("4", "delantero");
+            put("1", "ARQUERO");
+            put("2", "DEFENSOR");
+            put("3", "INTERNO");
+            put("4", "DELANTERO");
+            put("5", "EXTREMO");
         }
     };
 
@@ -102,21 +97,20 @@ public class JugadorControlador {
             throw new InvalidAñoCategoriaException("Ingrese una categoría válida");
         }
         System.out.println("Ingrese opción posición:");
-        System.out.println("1- Arquero");
-        System.out.println("2- Defensor");
-        System.out.println("3- Mediocampo");
-        System.out.println("4- Delantero");
+        System.out.println("1- ARQUERO");
+        System.out.println("2- DEFENSOR");
+        System.out.println("3- INTERNO");
+        System.out.println("4- DELANTERO");
+        System.out.println("5- EXTREMO");
 
         String posicionOpcion = posicionScan.next();
-        String posicionValue = posiciones.get(posicionOpcion);
-        if (posicionValue == null) {
+        Posicion posicion = Posicion.valueOf(posiciones.get(posicionOpcion));
+        if (posicion == null) {
             throw new InvalidPosicionException("Ingrese una opción válida");
         }
         Categoria categoria = new Categoria();
         categoria.setNombre(categoriaValue);
         categoria.setDivision(division);
-        Posicion posicion = new Posicion();
-        posicion.setNombre(posicionValue);
         String[] fechas = fechaNacimiento.split("-");
         String añoNacimiento = fechas[2];
         validateCategoriaFecha(añoNacimiento, categoria.getNombre());
@@ -130,14 +124,24 @@ public class JugadorControlador {
             aptoFisico = false;
         }
         jugador = new Jugador(dni, nombre, apellido, fecha, categoria, posicion, aptoFisico);
+
         System.out.println("Nuevo Jugador:" + jugador.mostrarDatosPersonales());
 
         System.out.println("-------------------------------------------");
+        ConnectionDao con = new ConnectionDaoImpl();
+        Connection conexion = con.getConnection();
+        con.addJugador(conexion, jugador);
+        try {
+            conexion.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return jugador;
     }
 
     /**
      * valida que la fecha tenga el formato dd-mm-yyyy.
+     *
      * @param fecha dato string ingresado por consola.
      * @throws InvalidFormatoFechaException
      */
@@ -152,6 +156,7 @@ public class JugadorControlador {
 
     /**
      * validación de la categoria corresponda con la fecha de nacimiento.
+     *
      * @param añoNacimiento
      * @param categoria
      * @throws InvalidAñoCategoriaException
@@ -165,6 +170,7 @@ public class JugadorControlador {
 
     /**
      * lista los jugadores de una división ingresada por consola.
+     *
      * @param club
      */
     public void listarJugadores(Club club) {
@@ -174,9 +180,18 @@ public class JugadorControlador {
         String divisionSeleccionada = divisionScan.next();
         System.out.println("División Seleccionada: " + divisionSeleccionada);
         Plantel plantel = club.getPlanteles().get(divisionSeleccionada);
+        ConnectionDao con = new ConnectionDaoImpl();
+        Connection conexion = con.getConnection();
+
+        List<Jugador> listaJugadores = con.getJugadores(conexion, Division.getDivisiones().get(divisionSeleccionada));
         try {
-            club.validateExistenJugadores(plantel);
-            List<Jugador> listaJugadores = plantel.getJugadores();
+            conexion.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            club.validateExistenJugadores(listaJugadores);
+
             for (Jugador jugador : listaJugadores) {
                 System.out.println(jugador.mostrarDatosPersonales());
             }

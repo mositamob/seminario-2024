@@ -1,16 +1,27 @@
 package modelo.entidades;
 
-public class Posicion {
-    private String nombre;
+public enum Posicion {
+        ARQUERO("ARQUERO",1),
+        DEFENSOR("DEFENSOR",2),
+        INTERNO("INTERNO",3),
+        DELANTERO("DELANTERO",4),
+        EXTREMO("EXTREMO",5);
 
-    public Posicion() {
+    private final String descripcion;
+    private final int codigo;
+    // Constructor del enum que recibe valores String e int
+    Posicion(String descripcion, int codigo) {
+        this.descripcion = descripcion;
+        this.codigo = codigo;
     }
 
-    public String getNombre() {
-        return nombre;
+    // Métodos para obtener los valores
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public int getCodigo() {
+        return codigo;
     }
+
 }

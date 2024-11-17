@@ -1,8 +1,16 @@
 package vista;
 
-import controlador.*;
-import modelo.entidades.*;
-import modelo.excepciones.*;
+import controlador.AsistenciaControlador;
+import controlador.EntrenadorControlador;
+import controlador.JugadorControlador;
+import controlador.PlantelControlador;
+import modelo.entidades.Club;
+import modelo.entidades.Entrenador;
+import modelo.entidades.Jugador;
+import modelo.excepciones.InvalidAñoCategoriaException;
+import modelo.excepciones.InvalidFormatoFechaException;
+import modelo.excepciones.InvalidPosicionException;
+import modelo.excepciones.JugadorDuplicadoException;
 
 import java.text.ParseException;
 import java.util.Scanner;
@@ -19,9 +27,12 @@ public class Menu {
 
     /**
      * Menu de opciones.
+     *
      * @throws ParseException
      */
     public void mostrarOpciones() throws ParseException {
+
+
         System.out.println("Seleccione opción:");
         Scanner opcionesScan = new Scanner(System.in);
 
@@ -64,7 +75,6 @@ public class Menu {
                     if (jugador != null) {
                         plantelControlador.asignarJugadorAPlantel(jugador, club);
                     }
-
                     break;
                 case 2:
                     Entrenador entrenador = entrenadorControlador.altaEntrenador();
@@ -79,7 +89,7 @@ public class Menu {
                     asistenciaControlador.registrarAsistencia(club);
                     break;
                 case 5:
-                   plantelControlador.generarEquipoPriorizado(club);
+                    plantelControlador.generarEquipoPriorizado(club);
                     break;
                 case 6:
                     plantelControlador.generarEquipoPriorizadoCantidad(club);
@@ -87,14 +97,14 @@ public class Menu {
                 case 7:
                     plantelControlador.mostrarEquipoConvocado(club);
                     break;
-                  case 8:
-                      try {
-                          plantelControlador.editarEquipoConvocado(club);
-                      } catch (JugadorDuplicadoException e) {
-                          System.out.println("Ingresó una opción inválida :\n" + e.getMessage());
-                          mostrarOpciones();
-                      }
-                      break;
+                case 8:
+                    try {
+                        plantelControlador.editarEquipoConvocado(club);
+                    } catch (JugadorDuplicadoException e) {
+                        System.out.println("Ingresó una opción inválida :\n" + e.getMessage());
+                        mostrarOpciones();
+                    }
+                    break;
                 case 9:
                     plantelControlador.desafectarJugador(club);
                     break;
@@ -108,6 +118,7 @@ public class Menu {
                     break;
             }
         } while (!salir);
+
     }
 
 }

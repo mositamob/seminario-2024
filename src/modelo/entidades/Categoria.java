@@ -5,6 +5,13 @@ public class Categoria {
     private Division division;
     private String nombre;
 
+    public Categoria() {
+    }
+
+    public Categoria(Division division, String nombre) {
+        this.division = division;
+        this.nombre = nombre;
+    }
 
     public Division getDivision() {
         return division;

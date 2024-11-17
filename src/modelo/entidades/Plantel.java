@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Plantel {
+    private int id;
     private Entrenador directorTecnico;
     private Entrenador preparadorFisico;
     private List<Jugador> jugadores = new ArrayList<>();
@@ -51,5 +52,13 @@ public class Plantel {
 
     public void setEquipoConvocado(Equipo equipoConvocado) {
         this.equipoConvocado = equipoConvocado;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
