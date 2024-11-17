@@ -5,7 +5,7 @@ import modelo.dao.ConnectionDaoImpl;
 import modelo.entidades.*;
 import excepciones.JugadorDuplicadoException;
 
-import java.sql.Connection;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -42,25 +42,19 @@ public class PlantelControlador {
      */
     public void asignarJugadorAPlantel(Jugador jugador, Club club) {
         ConnectionDao con = new ConnectionDaoImpl();
-        Connection conexion = con.getConnection();
         System.out.println("Confirma Alta Jugador? Si - No ");
         Scanner siNoScan = new Scanner(System.in);
         String opcionSiNo = siNoScan.next();
 
         if (opcionSiNo.equalsIgnoreCase("si")) {
             Integer d = Division.divisiones.get(jugador.getCategoria().getDivision().getNombre());
-            Plantel plantel = con.getPlantel(conexion, d);
+            Plantel plantel = con.getPlantel(con, d);
             plantel.getJugadores().add(jugador);
-            con.updateJugadoresPlantel(conexion, jugador.getDni(), plantel.getId());
-            con.updateJugadorIdPlantel(conexion, plantel.getId(), jugador.getDni());
+          //  con.updateJugadoresPlantel(con, jugador.getDni(), plantel.getId());
+            con.updateJugadorIdPlantel(con, plantel.getId(), jugador.getDni());
             System.out.println("Se guardo un nuevo jugador");
             System.out.println("División: " + plantel.getDivision().getNombre());
             System.out.println("Cantidad de Jugadores Plantel: " + plantel.getJugadores().size());
-        }
-        try {
-            conexion.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -106,15 +100,10 @@ public class PlantelControlador {
             }
         }
         ConnectionDao con = new ConnectionDaoImpl();
-        Connection conexion = con.getConnection();
         if (entrenador != null) {
-            con.addEntrenador(conexion, entrenador);
+            con.addEntrenador(con, entrenador);
         }
-        try {
-            conexion.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+
     }
 
     /**
@@ -130,13 +119,8 @@ public class PlantelControlador {
         String division = divisionScan.next();
         Integer divisionSeleccionada = Division.getDivisiones().get(division);
         ConnectionDao con = new ConnectionDaoImpl();
-        Connection conexion = con.getConnection();
-        List<Jugador> jugadoresDB = con.getJugadoresAsistencia(conexion, divisionSeleccionada);
-        try {
-            conexion.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        List<Jugador> jugadoresDB = con.getJugadoresAsistencia(con, divisionSeleccionada);
+
         Plantel plantel = club.getPlanteles().get(division);
         jugadores = getCuentaAsistenciaJugadores(jugadoresDB);
         Collections.sort(jugadores);
@@ -152,11 +136,7 @@ public class PlantelControlador {
         for (Jugador jugador : jugadores) {
             System.out.println(jugador.getNombre() + " " + jugador.getApellido() + " - " + jugador.getPosicion().name() + " - " + "Asistió: " + jugador.getTotalPresente() + " días");
         }
-
-        conexion = con.getConnection();
-        con.updatePlantel(conexion, plantel);
-
-
+        con.updatePlantel(con, plantel);
         return jugadores;
     }
 
@@ -185,7 +165,6 @@ public class PlantelControlador {
                         if (asistencia.getValue().isPresente()) {
                             registrarJugador.setTotalPresente();
                         }
-
                     }
 
                 }
@@ -215,13 +194,7 @@ public class PlantelControlador {
         int cantidad = cantidadScan.nextInt();
         Integer divisionSeleccionada = Division.getDivisiones().get(division);
         ConnectionDao con = new ConnectionDaoImpl();
-        Connection conexion = con.getConnection();
-        List<Jugador> jugadores = con.getJugadores(conexion, divisionSeleccionada);
-        try {
-            conexion.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        List<Jugador> jugadores = con.getJugadores(con, divisionSeleccionada);
         List<Jugador> listaCantidad = jugadores.subList(0, cantidad);
         System.out.println("Lista Priorizada: ");
         for (Jugador jugador : listaCantidad) {
@@ -269,14 +242,8 @@ public class PlantelControlador {
 
         Plantel plantel = club.getPlanteles().get(division);
         ConnectionDao con = new ConnectionDaoImpl();
-        Connection conexion = con.getConnection();
 
-        List<Jugador> disponibles = con.getJugadores(conexion, Division.getDivisiones().get(division));
-        try {
-            conexion.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        List<Jugador> disponibles = con.getJugadores(con, Division.getDivisiones().get(division));
         System.out.println("Disponibles:");
         for (Jugador jugador : disponibles) {
             System.out.println("DNI: " + jugador.getDni() + " - " + jugador.getNombre() + " " + jugador.getApellido() + " - " + jugador.getPosicion().name());
@@ -326,8 +293,7 @@ public class PlantelControlador {
         System.out.println("Ingrese División:");
         String division = divisionScan.next();
         ConnectionDao con = new ConnectionDaoImpl();
-        Connection conexion = con.getConnection();
-        Plantel plantel = con.getPlantel(conexion, Division.getDivisiones().get(division));
+        Plantel plantel = con.getPlantel(con, Division.getDivisiones().get(division));
         System.out.println("División:" + plantel.getDivision().getNombre());
         Scanner dniScan = new Scanner(System.in);
         List<Jugador> jugadores = plantel.getJugadores();
@@ -338,8 +304,8 @@ public class PlantelControlador {
         System.out.println("Ingrese DNI de jugador a desafectar:");
         String dni = dniScan.next();
         int idPlantel = plantel.getId();
-        con.deleteJugador(conexion, dni);
-        con.deleteJugadorIdPlantel(conexion, idPlantel, dni);
+        con.deleteJugador(con, dni);
+        con.deleteJugadorIdPlantel(con, idPlantel, dni);
         for (Jugador j : jugadores) {
             if (j.getDni().equalsIgnoreCase(dni)) {
                 System.out.println("Se desafecta al jugador DNI:" + j.getDni() + "- " + j.getNombre() + " " + j.getApellido());
@@ -355,11 +321,6 @@ public class PlantelControlador {
                     break;
                 }
             }
-        }
-        try {
-            conexion.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 

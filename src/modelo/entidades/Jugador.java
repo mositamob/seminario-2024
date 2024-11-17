@@ -11,6 +11,7 @@ public class Jugador extends Persona implements Comparable<Jugador> {
     private boolean aptoFisico;
     private Map<String, Asistencia> asistencia = new HashMap<>();
     private int totalPresente = 0;
+    private int idPlantel;
 
     public Jugador() {
     }
@@ -65,6 +66,14 @@ public class Jugador extends Persona implements Comparable<Jugador> {
 
     public void setTotalPresente() {
         this.totalPresente ++;
+    }
+
+    public int getIdPlantel() {
+        return idPlantel;
+    }
+
+    public void setIdPlantel(int idPlantel) {
+        this.idPlantel = idPlantel;
     }
 
     public void calcularClasesPresente(String semanaActual) {

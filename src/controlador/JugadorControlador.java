@@ -124,18 +124,15 @@ public class JugadorControlador extends PlantelControlador {
             aptoFisico = false;
         }
         jugador = new Jugador(dni, nombre, apellido, fecha, categoria, posicion, aptoFisico);
-
         System.out.println("Nuevo Jugador:" + jugador.mostrarDatosPersonales());
 
         System.out.println("-------------------------------------------");
         ConnectionDao con = new ConnectionDaoImpl();
-        Connection conexion = con.getConnection();
-        con.addJugador(conexion, jugador);
-        try {
-            conexion.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        Integer d = Division.divisiones.get(jugador.getCategoria().getDivision().getNombre());
+        Plantel plantel = con.getPlantel(con, d);
+        jugador.setIdPlantel(plantel.getId());
+        con.addJugador(con, jugador);
+        con.updateJugadoresPlantel(con, jugador.getDni(), plantel.getId());
         return jugador;
     }
 
@@ -181,14 +178,7 @@ public class JugadorControlador extends PlantelControlador {
         System.out.println("División Seleccionada: " + divisionSeleccionada);
         Plantel plantel = club.getPlanteles().get(divisionSeleccionada);
         ConnectionDao con = new ConnectionDaoImpl();
-        Connection conexion = con.getConnection();
-
-        List<Jugador> listaJugadores = con.getJugadores(conexion, Division.getDivisiones().get(divisionSeleccionada));
-        try {
-            conexion.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        List<Jugador> listaJugadores = con.getJugadores(con, Division.getDivisiones().get(divisionSeleccionada));
         try {
             club.validateExistenJugadores(listaJugadores);
 

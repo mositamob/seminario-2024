@@ -28,8 +28,8 @@ public class ConnectionDaoImpl implements ConnectionDao {
     }
 
 
-    public List<Jugador> getJugadores(Connection connection, int idDivision) {
-
+    public List<Jugador> getJugadores(ConnectionDao con, int idDivision) {
+        Connection connection = con.getConnection();
         String selectQuery = "SELECT * \n" + "FROM jugadores j\n" + "INNER JOIN  plantel p ON j.id_plantel = p.id_plantel\n" + "INNER JOIN categoria c ON p.id_categoria = c.id_categoria\n" + "INNER JOIN division d ON d.id_division= c.id_division\n" + "INNER JOIN posicion po ON j.id_posicion = po.id_posicion\n" + "WHERE d.id_division = ?";
         PreparedStatement selectStatement;
         try {
@@ -57,11 +57,17 @@ public class ConnectionDaoImpl implements ConnectionDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return jugadores;
     }
 
     @Override
-    public Plantel getPlantel(Connection connection, int idDivision) {
+    public Plantel getPlantel(ConnectionDao con, int idDivision) {
+        Connection connection = con.getConnection();
         List<Jugador> jugadores = new ArrayList<>();
 
         String selectQuery = "SELECT DISTINCT j.nombre, j.apellido, j.dni, j.apto_fisico,j.fecha_nacimiento, c.id_categoria, j.id_posicion, p.id_plantel, d.descripcion_division, po.descripcion_posicion\n" +
@@ -75,7 +81,7 @@ public class ConnectionDaoImpl implements ConnectionDao {
         PreparedStatement selectStatement;
 
         Plantel plantel = new Plantel();
-        ;
+
         try {
 
             selectStatement = connection.prepareStatement(selectQuery);
@@ -102,12 +108,17 @@ public class ConnectionDaoImpl implements ConnectionDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return plantel;
     }
 
     @Override
-    public List<Jugador> getJugadoresAsistencia(Connection connection, int idDivision) {
-
+    public List<Jugador> getJugadoresAsistencia(ConnectionDao con, int idDivision) {
+        Connection connection = con.getConnection();
         String selectQuery = "SELECT a.key_asistencia as key_asistencia,\n" + " a.presente as presente, j.nombre as nombre,\n" + " j.apellido as apellido, po.descripcion_posicion as descripcion_posicion, j.dni as dni\n" + "FROM jugadores j\n" + "INNER JOIN asistencia a ON j.dni = a.dni\n" + "INNER JOIN  plantel p ON j.id_plantel = p.id_plantel\n" + "INNER JOIN categoria c ON p.id_categoria = c.id_categoria\n" + "INNER JOIN division d ON d.id_division= c.id_division\n" + "INNER JOIN posicion po ON j.id_posicion = po.id_posicion\n" + "Where d.id_division = ?";
         PreparedStatement selectStatement;
         try {
@@ -128,7 +139,10 @@ public class ConnectionDaoImpl implements ConnectionDao {
 
                 jugadores.add(j);
             }
-
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        try {
             connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -137,8 +151,9 @@ public class ConnectionDaoImpl implements ConnectionDao {
     }
 
     @Override
-    public void addJugador(Connection connection, Jugador jugador) {
-        String sql = "INSERT INTO `club-futbol`.`jugadores` (`dni`,`nombre`, `apellido`, `apto_fisico`, `id_posicion`,`fecha_nacimiento`,`categoria`) " + "VALUES (?, ?, ?, ?,?,?,?);";
+    public void addJugador(ConnectionDao con, Jugador jugador) {
+        Connection connection = con.getConnection();
+        String sql = "INSERT INTO `club-futbol`.`jugadores` (`dni`,`nombre`, `apellido`, `apto_fisico`, `id_posicion`,`fecha_nacimiento`,`categoria`, `id_plantel`) " + "VALUES (?, ?, ?, ?,?,?,?,?);";
         PreparedStatement preparedStmt;
         try {
             preparedStmt = connection.prepareStatement(sql);
@@ -153,8 +168,10 @@ public class ConnectionDaoImpl implements ConnectionDao {
             preparedStmt.setInt(5, jugador.getPosicion().getCodigo());
             preparedStmt.setDate(6, new java.sql.Date(jugador.getFechaNacimiento().getTime()));
             preparedStmt.setString(7, jugador.getCategoria().getNombre());
+            preparedStmt.setInt(8, jugador.getIdPlantel());
+
             preparedStmt.execute();
-            System.out.println("se suma un jugador: " + jugador.getNombre() + " " + jugador.getApellido() + "DNI: " + jugador.getDni());
+            System.out.println("se suma un jugador: " + jugador.getNombre() + " " + jugador.getApellido() + " DNI: " + jugador.getDni());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -166,7 +183,8 @@ public class ConnectionDaoImpl implements ConnectionDao {
     }
 
     @Override
-    public void addEntrenador(Connection connection, Entrenador entrenador) {
+    public void addEntrenador(ConnectionDao con, Entrenador entrenador) {
+        Connection connection = con.getConnection();
         String sql = "INSERT INTO `club-futbol`.`entrenadores` (`nombre`, `apellido`, `fecha_nacimiento`, `is_preparador`, `años_experiencia`,`division`) VALUES (?, ?, ?, ?, ?,?);";
         PreparedStatement preparedStmt;
         try {
@@ -183,7 +201,6 @@ public class ConnectionDaoImpl implements ConnectionDao {
             preparedStmt.setInt(5, entrenador.getAñosExperiencia());
             preparedStmt.setString(6, entrenador.getDivision().getNombre());
 
-
             preparedStmt.execute();
             System.out.println("se agrego al entrenador: " + entrenador.getNombre() + " " + entrenador.getApellido());
         } catch (SQLException e) {
@@ -197,7 +214,8 @@ public class ConnectionDaoImpl implements ConnectionDao {
     }
 
     @Override
-    public void deleteJugador(Connection connection, String dni) {
+    public void deleteJugador(ConnectionDao con, String dni) {
+        Connection connection = con.getConnection();
         String sql = "DELETE FROM `club-futbol`.`jugadores` WHERE dni = ?";
 
         PreparedStatement preparedStmt;
@@ -215,13 +233,17 @@ public class ConnectionDaoImpl implements ConnectionDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
     @Override
-    public void updateAsistencia(Connection connection, Asistencia asistencia, String key, String dni) {
-
+    public void updateAsistencia(ConnectionDao con, Asistencia asistencia, String key, String dni) {
+        Connection connection = con.getConnection();
         String sql = "INSERT INTO `club-futbol`.`asistencia` (`fecha`, `presente`, `key_asistencia`, `dni`) VALUES (?, ?, ?, ?);";
         PreparedStatement preparedStmt;
         try {
@@ -239,10 +261,16 @@ public class ConnectionDaoImpl implements ConnectionDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public void updatePlantel(Connection connection, Plantel plantel) {
+    public void updatePlantel(ConnectionDao con, Plantel plantel) {
+        Connection connection = con.getConnection();
         long idGenerado = 0;
         String sql = "INSERT INTO `club-futbol`.`partido` (`fecha`) VALUES (?);";
         PreparedStatement preparedStmt;
@@ -257,11 +285,10 @@ public class ConnectionDaoImpl implements ConnectionDao {
                 preparedStmt.setDate(1, new java.sql.Date(fechaPartido.getTime()));
                 int filasAfectadas = preparedStmt.executeUpdate();
                 if (filasAfectadas == 1) {
-                    // Obtener las claves generadas
                     try (ResultSet generatedKeys = preparedStmt.getGeneratedKeys()) {
                         if (generatedKeys.next()) {
-                            idGenerado = generatedKeys.getLong(1); // La primera columna de las claves generadas
-                            System.out.println("ID generado: " + idGenerado);
+                            idGenerado = generatedKeys.getLong(1);
+
                         } else {
                             System.out.println("No se generó ningún ID.");
                         }
@@ -272,25 +299,7 @@ public class ConnectionDaoImpl implements ConnectionDao {
                 throw new RuntimeException(e);
             }
 
-
-            //update jugadores x partido
-            String sqlJP = "INSERT INTO `club-futbol`.`jugadores_x_partido` (`dni`, `id_partido`) VALUES (?,?);";
-            PreparedStatement ps;
-            try {
-                ps = connection.prepareStatement(sqlJP);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            try {
-                for (Jugador j : plantel.getEquipoConvocado().getJugadores()) {
-                    ps.setString(1, j.getDni());
-                    ps.setInt(2, (int) idGenerado);
-                    ps.execute();
-                }
-
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            insertarJugadoresConvocadosPorPartido(plantel, connection, (int) idGenerado);
             try {
                 connection.close();
             } catch (SQLException e) {
@@ -301,8 +310,30 @@ public class ConnectionDaoImpl implements ConnectionDao {
 
     }
 
+    private static void insertarJugadoresConvocadosPorPartido(Plantel plantel, Connection connection, int idGenerado) {
+        //update jugadores x partido
+        String sqlJP = "INSERT INTO `club-futbol`.`jugadores_x_partido` (`dni`, `id_partido`) VALUES (?,?);";
+        PreparedStatement ps;
+        try {
+            ps = connection.prepareStatement(sqlJP);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            for (Jugador j : plantel.getEquipoConvocado().getJugadores()) {
+                ps.setString(1, j.getDni());
+                ps.setInt(2, idGenerado);
+                ps.execute();
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
-    public void updateJugadoresPlantel(Connection connection, String dni, int idPlantel) {
+    public void updateJugadoresPlantel(ConnectionDao con, String dni, int idPlantel) {
+        Connection connection = con.getConnection();
         String sql = "INSERT INTO `club-futbol`.`jugadores_x_plantel` (`dni`, `id_plantel`) VALUES (?, ?);";
         PreparedStatement preparedStmt;
         try {
@@ -317,12 +348,17 @@ public class ConnectionDaoImpl implements ConnectionDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public void updateJugadorIdPlantel(Connection connection, int idPlantel, String dni) {
-        String sql = "DELETE FROM `club-futbol`.`jugadores_x_plantel` WHERE (`dni` = ?) and (`id_plantel` = ?);";
+    public void updateJugadorIdPlantel(ConnectionDao con, int idPlantel, String dni) {
+        Connection connection = con.getConnection();
+        String sql = "UPDATE `club-futbol`.`jugadores` SET `id_plantel` = ? WHERE `dni` = ?";
 
         PreparedStatement preparedStmt;
         try {
@@ -336,8 +372,6 @@ public class ConnectionDaoImpl implements ConnectionDao {
             int filasAfectadas = preparedStmt.executeUpdate();
             if (filasAfectadas > 0) {
                 System.out.println("Jugador actualizado con éxito.");
-            } else {
-                System.out.println("No se encontró ningún Jugador con ese ID.");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -350,7 +384,8 @@ public class ConnectionDaoImpl implements ConnectionDao {
     }
 
     @Override
-    public void deleteJugadorIdPlantel(Connection connection, int idPlantel, String dni) {
+    public void deleteJugadorIdPlantel(ConnectionDao con, int idPlantel, String dni) {
+        Connection connection = con.getConnection();
         String sql = "DELETE FROM `club-futbol`.`jugadores_x_plantel` WHERE (`dni` = ?) and (`id_plantel` = ?)";
 
         PreparedStatement preparedStmt;
@@ -366,6 +401,11 @@ public class ConnectionDaoImpl implements ConnectionDao {
             } else {
                 System.out.println("No se encontró un jugador con ese dni.");
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

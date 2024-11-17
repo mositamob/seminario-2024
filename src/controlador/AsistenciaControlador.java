@@ -2,10 +2,11 @@ package controlador;
 
 import modelo.dao.ConnectionDao;
 import modelo.dao.ConnectionDaoImpl;
-import modelo.entidades.*;
+import modelo.entidades.Asistencia;
+import modelo.entidades.Club;
+import modelo.entidades.Division;
+import modelo.entidades.Jugador;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.*;
 
 public class AsistenciaControlador extends PlantelControlador {
@@ -21,8 +22,7 @@ public class AsistenciaControlador extends PlantelControlador {
         String division = divisionScan.next();
         Integer divisionSeleccionada = Division.getDivisiones().get(division);
         ConnectionDao con = new ConnectionDaoImpl();
-        Connection conexion = con.getConnection();
-        List<Jugador> jugadores = con.getJugadores(conexion, divisionSeleccionada);
+        List<Jugador> jugadores = con.getJugadores(con, divisionSeleccionada);
 
         System.out.println("División:" + divisionSeleccionada);
         Date diaEntrenamiento = new Date();
@@ -45,12 +45,7 @@ public class AsistenciaControlador extends PlantelControlador {
             }
             String key = numeroSemana + "_" + anio + "-" + diaEntrenamiento;
             j.getAsistencia().put(key, asistencia);
-            con.updateAsistencia(conexion, asistencia, key, j.getDni());
-        }
-        try {
-            conexion.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            con.updateAsistencia(con, asistencia, key, j.getDni());
         }
 
         for (Jugador jugador : jugadores) {
